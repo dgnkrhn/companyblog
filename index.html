@@ -79,6 +79,19 @@ button:hover {
     padding-top: 50px;
 }
 
+.modalhome {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: #fefefe;
+    padding-top: 50px;
+}
+
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
@@ -95,6 +108,15 @@ button:hover {
     width: 30%; /* Could be more or less, depending on screen size */
     min-width: 300px;
     max-width: 500px;
+}
+
+.modalhome-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    width: 30%; /* Could be more or less, depending on screen size */
+    min-width: 300px;
+    max-width: 500px;
+    min-height: 600px;
 }
 
 /* Style the horizontal ruler */
@@ -132,62 +154,144 @@ hr {
        width: 100%;
     }
 }
+
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
 </style>
 
 <body>
 
-    <div class="container">
-        <form class="modallogin-content" action="/action_page.php">
+    <div id="loginpage" class="container">
+        <form class="modallogin-content" action="javascript:validateForm();" method="post" name="loginpage">
             <h1>Login</h1>
             <hr>
-            <label for="useridlogin"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="useridlogin" required>
+            <label for="userid"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="userid" required>
 
-            <label for="pswlogin"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="pswlogin" required>
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
 
             <label>
                 <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+                <span id="wrong"></span>
             </label>
             <br>
-            <button onclick="document.getElementById('logins').style.display='block'" style="border-bottom:">Login</button>
-            <button onclick="document.getElementById('id01').style.display='block'" style="border-bottom:">Sign Up</button>
+            <button value="Login" type="submit" style="border-bottom:">Login</button>
+            <button onclick="document.getElementById('signpage').style.display='block'" type="button" style="border-bottom:">Sign
+                Up</button>
+            <span id="error"></span>
 
         </form>
     </div>
 
-    <div id="id01" class="modal">
-        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-        <form class="modal-content" action="/action_page.php">
+    <div id="homepage" class="modalhome">
+        <div class="modalhome-content">
+            <span style="float:left;" style="font-size: 80px"><b>Blog</b></span>
+            <span id="userinfo" style="float:right;"></span>
+            <br>
+            <hr>
+            <button onclick=""> </button>
+            Deneme sayfasi
+
+
+
+            <div class="clearfix">
+                <hr>
+                <button type="button" onclick="document.getElementById('homepage').style.display='none'" style="border-bottom: "
+                    class="homecancel">Exit</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="signpage" class="modal">
+        <span onclick="document.getElementById('signpage').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <form class="modal-content" action="javascript:validateSign();" method="post" name="signpage">
             <div class="container">
                 <h1>Sign Up</h1>
                 <hr>
-                <label for="userid"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="userid" required>
+                <label for="useridsign"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="useridsign" required>
 
                 <label for="email"><b>E-mail</b></label>
                 <input type="email" placeholder="Enter E-mail Address" name="email" required>
 
-                <label for="psw"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="psw" required>
+                <label for="pswsign"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="pswsign" required>
 
-                <label for="psw-repeat"><b>Repeat Password</b></label>
-                <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+                <label for="pswsign-repeat"><b>Repeat Password</b></label>
+                <input type="password" placeholder="Repeat Password" name="pswsign-repeat" required>
 
                 <label for="birthday"><b>Birthday</b></label>
                 <input type="date" placeholder="Enter Birthday" name="birthday" required>
 
                 <div class="clearfix">
-                    <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-                    <button type="submit" class="signupbtn">Sign Up</button>
+                    <button type="button" onclick="document.getElementById('signpage').style.display='none'" class="cancelbtn">Cancel</button>
+                    <button value="SignUp" type="submit" class="signupbtn">Sign Up</button>
                 </div>
             </div>
         </form>
     </div>
 
-    <script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript">
+
+
         // Get the modal
-        var modal = document.getElementById('id01');
+        var modal = document.getElementById('signpage');
 
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
@@ -195,6 +299,55 @@ hr {
                 modal.style.display = "none";
             }
         }
+
+        function validateForm() {
+
+            if (username == "dgn" && password == "dgn") {
+                //window.location = "main.html";
+                console.log("Welcome " + username);
+                var page = document.getElementById("homepage");
+                page.style.display = 'block';
+                var info = document.getElementById('userinfo');
+                info.innerHTML = username;
+                return false;
+            }
+            else {
+                var outputEl = document.getElementById('error');
+                outputEl.innerHTML = '<b>username or password is invalid</b>';
+            }
+        }
+
+        function validateSign() {
+
+            var signpass = document.forms["signpage"]["pswsign"].value.trim();
+            var signpass2 = document.forms["signpage"]["pswsign-repeat"].value;
+            var signuser = document.forms["signpage"]["useridsign"].value;
+            var signemail = document.forms["signpage"]["email"].value;
+            var signbirthday = document.forms["signpage"]["birthday"].value;
+
+            if (signpass != signpass2) {
+                alert("Check Password !");
+                return true;
+            }
+            else {
+                $(document).ready(function () {
+                        $.post("http://localhost/company/index.php?action=add_user",
+                            {
+                                username: signuser,
+                                email: signemail,
+                                password: signpass,
+                                birthday: signbirthday
+                            },
+                            function (data, status) {
+                                console.log("Data: " + data + "\nStatus: " + status);
+                            });
+                });
+                alert("Registration Successful");
+                location.reload();
+            }
+        }
+
+
     </script>
 
 </body>
