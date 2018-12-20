@@ -215,7 +215,7 @@ hr {
 <body>
 
     <div id="loginpage" class="container">
-        <form class="modallogin-content" action="javascript:validateForm();" method="post" name="loginpage">
+        <form class="modallogin-content" action="javascript:connect();" method="post" name="loginpage">
             <h1>Login</h1>
             <hr>
             <label for="userid"><b>Username</b></label>
@@ -285,8 +285,10 @@ hr {
             </div>
         </form>
     </div>
+    <button type="button" onclick="connect()">Connect</button>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
     <script language="javascript" type="text/javascript">
 
 
@@ -297,23 +299,6 @@ hr {
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
-            }
-        }
-
-        function validateForm() {
-
-            if (username == "dgn" && password == "dgn") {
-                //window.location = "main.html";
-                console.log("Welcome " + username);
-                var page = document.getElementById("homepage");
-                page.style.display = 'block';
-                var info = document.getElementById('userinfo');
-                info.innerHTML = username;
-                return false;
-            }
-            else {
-                var outputEl = document.getElementById('error');
-                outputEl.innerHTML = '<b>username or password is invalid</b>';
             }
         }
 
@@ -331,20 +316,43 @@ hr {
             }
             else {
                 $(document).ready(function () {
-                        $.post("http://localhost/company/index.php?action=add_user",
-                            {
-                                username: signuser,
-                                email: signemail,
-                                password: signpass,
-                                birthday: signbirthday
-                            },
-                            function (data, status) {
-                                console.log("Data: " + data + "\nStatus: " + status);
-                            });
+                    $.post("http://localhost/company/index.php?action=add_user",
+                        {
+                            username: signuser,
+                            email: signemail,
+                            password: signpass,
+                            birthday: signbirthday
+                        },
+                        function (data, status) {
+                            console.log("Data: " + data + "\nStatus: " + status);
+                        });
                 });
                 alert("Registration Successful");
                 location.reload();
             }
+        }
+
+        function connect() {
+
+            var username = document.forms["loginpage"]["userid"].value.trim();
+            var password = document.forms["loginpage"]["psw"].value.trim();
+            
+            $.ajax({
+                url:'login.php',
+                type:'post',
+                data:{username:username,password:password},
+                success:function(response){
+                    var msg = "";
+                    if(response == 1){
+                        console.log("successfulyjs");
+                        //window.location = "home.php";
+                    }else{
+                        console.log("Invalid username or password!");
+                    }
+                    //$("#message").html(msg);
+                }
+            });
+
         }
 
 
