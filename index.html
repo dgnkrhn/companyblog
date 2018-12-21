@@ -41,9 +41,17 @@ button:hover {
     padding: 14px 20px;
     background-color: #f44336;
 }
+.homecancel {
+    padding: 14px 20px;
+    background-color: #f44336;
+}
 
 /* Float cancel and signup buttons and add an equal width */
 .cancelbtn, .signupbtn {
+  float: left;
+  width: 50%;
+}
+.addpost, .deletepost {
   float: left;
   width: 50%;
 }
@@ -215,7 +223,7 @@ hr {
 <body>
 
     <div id="loginpage" class="container">
-        <form class="modallogin-content" action="javascript:connect();" method="post" name="loginpage">
+        <form class="modallogin-content" action="javascript:validateLogin();" method="post" name="loginpage">
             <h1>Login</h1>
             <hr>
             <label for="userid"><b>Username</b></label>
@@ -223,11 +231,12 @@ hr {
 
             <label for="psw"><b>Password</b></label>
             <input type="password" placeholder="Enter Password" name="psw" required>
-
+            <!--
             <label>
                 <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
                 <span id="wrong"></span>
             </label>
+-->
             <br>
             <button value="Login" type="submit" style="border-bottom:">Login</button>
             <button onclick="document.getElementById('signpage').style.display='block'" type="button" style="border-bottom:">Sign
@@ -243,15 +252,14 @@ hr {
             <span id="userinfo" style="float:right;"></span>
             <br>
             <hr>
-            <button onclick=""> </button>
-            Deneme sayfasi
-
-
+            <button class="addpost"> Add Post </button>
+            <button class="deletepost"> Delete Post </button>
+            <hr>
 
             <div class="clearfix">
                 <hr>
-                <button type="button" onclick="document.getElementById('homepage').style.display='none'" style="border-bottom: "
-                    class="homecancel">Exit</button>
+                <button type="button" onclick="document.getElementById('homepage').style.display='none'" style="border-bottom:"
+                    class="homecancel">Log off</button>
             </div>
         </div>
     </div>
@@ -285,7 +293,6 @@ hr {
             </div>
         </form>
     </div>
-    <button type="button" onclick="connect()">Connect</button>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -332,27 +339,59 @@ hr {
             }
         }
 
-        function connect() {
+        function validateLogin() {
 
             var username = document.forms["loginpage"]["userid"].value.trim();
             var password = document.forms["loginpage"]["psw"].value.trim();
-            
+
             $.ajax({
-                url:'login.php',
-                type:'post',
-                data:{username:username,password:password},
-                success:function(response){
+                url: 'login.php',
+                type: 'post',
+                data: { username: username, password: password },
+                success: function (response) {
                     var msg = "";
-                    if(response == 1){
-                        console.log("successfulyjs");
+                    if (response == 1) {
+                        console.log("You have successfully logged in");
                         //window.location = "home.php";
-                    }else{
+                        homepage();
+                    } else {
                         console.log("Invalid username or password!");
                     }
                     //$("#message").html(msg);
                 }
             });
 
+        }
+
+        function homepage() {
+
+            var page = document.getElementById("homepage");
+            page.style.display = 'block';
+            var info = document.getElementById('userinfo');
+            info.innerHTML = document.forms["loginpage"]["userid"].value.trim();
+
+            $.ajax({
+                url: 'listpost.php',
+                type: 'get',
+                datatype: 'json',
+
+                success: function (data) {
+
+                    var postjson = JSON.parse(data);
+
+                    //console.log(postjson.username[0]);
+
+                    //var json = $.parseJSON(data);
+                    $(postjson).each(function (i, val) {
+                        $.each(val, function (k, v) {
+                            //var pn = 0;
+                            console.log(k + " : " + v);
+                        });
+                    });
+
+                    //console.log(postjson.username(0));
+                }
+            });
         }
 
 
