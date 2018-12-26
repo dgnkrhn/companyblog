@@ -50,9 +50,21 @@ button:hover {
     background-color: #cecece;
     color: black;
 }
+.backhomepage {
+    padding: 14px 20px;
+    background-color: #f44336;
+}
 
 /* Float cancel and signup buttons and add an equal width */
 .cancelbtn, .signupbtn {
+  float: left;
+  width: 50%;
+}
+.addpost, .refresh {
+  float: left;
+  width: 50%;
+}
+.refreshpostpage, .backhomepage {
   float: left;
   width: 50%;
 }
@@ -156,6 +168,11 @@ hr {
     clear: both;
     display: table;
 }
+.cleardiv::before {
+    content: "";
+    clear: both;
+    display: table;
+}
 
 /* Change styles for cancel button and signup button on extra small screens */
 @media screen and (max-width: 300px) {
@@ -255,14 +272,18 @@ hr {
             <hr>
             <button onclick="document.getElementById('addpostpage').style.display='block'" value="addpost" type="submit"
                 class="addpost"> Add Post </button>
+            <button onclick="refresh()" value="refresh" class="refresh"> Refresh </button>
             <hr>
 
-            <div id="postbuttons"></div>
+            
+            <form class="modal-content" action="javascript:postpage();" method="post" name="postpage">
+                <div id="postbuttons"></div>
+            </form>
 
             <div class="clearfix">
                 <hr>
-                <button type="button" onclick="document.getElementById('homepage').style.display='none'" style="border-bottom:"
-                    class="homecancel">Log off</button>
+                <button type="button" onclick="logoff()" style="border-bottom:" class="homecancel" value="logoff">Log
+                    off</button>
             </div>
         </div>
     </div>
@@ -310,12 +331,33 @@ hr {
                 <input type="text" placeholder="Enter post" name="body" required>
 
                 <div class="clearfix">
-                    <button type="button" onclick="document.getElementById('addpostpage').style.display='none'" class="cancelbtn">Cancel</button>
-                    <button onclick="document.getElementById('addpostpage').style.display='none'" value="Post" type="submit"
-                        class="signupbtn">Post</button>
+                    <button onclick="document.getElementById('addpostpage').style.display='none';" type="button" class="cancelbtn">Cancel</button>
+                    <button value="Post" type="submit" class="signupbtn">Post</button>
                 </div>
             </div>
         </form>
+    </div>
+
+    <div id="postpage" class="modalhome">
+        <div class="modalhome-content">
+            <span style="float:left;" style="font-size: 80px"><b>Title</b></span>
+            <span id="posttitle" style="float:right;"></span>
+            <br>
+            <hr>
+            <p> Deneme </p>
+            <hr>
+            <div id="commentbox"></div>
+            <hr>
+            <label for="Comment"><b>Comment</b></label>
+            <input type="text" placeholder="Enter Comment" name="Comment" required>
+            <button onclick="document.getElementById('addcomment').style.display='block'" value="addcomment" type="submit"
+                class="addcomment"> Add Comment </button>
+            <div class="clearfix">
+                <button type="button" onclick="postpageback()" style="border-bottom:" class="backhomepage" value="backhomepage">Back</button>
+                <button onclick="refresh()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
+            </div>
+
+        </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -333,10 +375,15 @@ hr {
             }
         }
         var modal2 = document.getElementById('addpostpage');
-        window.onclick = function (event) {
-            if (event.target == modal2) {
+        window.onclick = function (event2) {
+            if (event2.target == modal2) {
                 modal2.style.display = "none";
             }
+        }
+
+        function logoff() {
+            document.getElementById('homepage').style.display = 'none';
+            window.location.reload();
         }
 
         function validateSign() {
@@ -414,40 +461,30 @@ hr {
 
                     var postjson = JSON.parse(data);
 
-                    //console.log(postjson.username[0]);
-
-                    //console.log(postjson[0].Postnumber);
-                    //console.log(postjson[2].Postnumber);
-
-                    //document.getElementById("post1").innerHTML = postjson[0].username + " | " + postjson[0].title;
-
                     for (i; i < postjson.length; i++) {
                         console.log(postjson[i]);
 
                         function createButton() {
                             var element = document.createElement("button");
                             element.className = "postbutton";
+                            element.value = "postnumber" + postjson[i].Postnumber;
+                            var ll = "postpage" + postjson[i].Postnumber + "()";
+                            element.setAttribute("onclick", ll);
                             element.appendChild(document.createTextNode(postjson[i].username + " | " + postjson[i].title));
                             var page = document.getElementById("postbuttons");
                             page.appendChild(element);
+                            element.remo
+
+                            function ll() {
+                                var postinfo =  "postnumber" + postjson[i].Postnumber;
+                            }
 
                             console.log(element);
                         }
-
                         createButton();
-
+                        l = "postnumber" + postjson[i].Postnumber;
+                        console.log(postinfo);
                     }
-
-                    /*//var json = $.parseJSON(data);
-                    $(postjson).each(function (i, val) {
-                        $.each(val, function (k, v) {
-                            //var pn = 0;
-                            //console.log(k + " : " + v);
-                        });
-                    });
-
-                    //console.log(postjson.username(0));
-                */
                 }
             });
         }
@@ -479,7 +516,33 @@ hr {
                     });
             });
             alert("Post added");
+            $("button").remove(".postbutton");
+            document.forms["addpostpage"]["title"].value = "";
+            document.forms["addpostpage"]["body"].value = "";
+            document.getElementById('addpostpage').style.display = 'none';
+
+            refresh();
         }
+
+        function refresh() {
+            $("button").remove(".postbutton");
+            homepage();
+        }
+
+        function postpage() {
+            var page = document.getElementById("postpage");
+            page.style.display = 'block';
+
+            var titleinfo = document.getElementById('posttitle');
+            titleinfo.innerHTML = document.forms[""][""].value.trim();
+        }
+
+        function postpageback() {
+            document.getElementById('postpage').style.display = 'none';
+            $("button").remove(".postbutton");
+            homepage();
+        }
+
 
     </script>
 
