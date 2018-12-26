@@ -45,13 +45,14 @@ button:hover {
     padding: 14px 20px;
     background-color: #f44336;
 }
+.postbutton {
+    padding: 14px 20px;
+    background-color: #cecece;
+    color: black;
+}
 
 /* Float cancel and signup buttons and add an equal width */
 .cancelbtn, .signupbtn {
-  float: left;
-  width: 50%;
-}
-.addpost, .deletepost {
   float: left;
   width: 50%;
 }
@@ -252,9 +253,11 @@ hr {
             <span id="userinfo" style="float:right;"></span>
             <br>
             <hr>
-            <button class="addpost"> Add Post </button>
-            <button class="deletepost"> Delete Post </button>
+            <button onclick="document.getElementById('addpostpage').style.display='block'" value="addpost" type="submit"
+                class="addpost"> Add Post </button>
             <hr>
+
+            <div id="postbuttons"></div>
 
             <div class="clearfix">
                 <hr>
@@ -294,6 +297,27 @@ hr {
         </form>
     </div>
 
+    <div id="addpostpage" class="modal">
+        <span onclick="document.getElementById('addpostpage').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <form class="modal-content" action="javascript:addpost();" method="post" name="addpostpage">
+            <div class="container">
+                <h1>Add Post</h1>
+                <hr>
+                <label for="title"><b>Title</b></label>
+                <input type="text" placeholder="Enter Title" name="title" required>
+
+                <label for="body"><b>Post</b></label>
+                <input type="text" placeholder="Enter post" name="body" required>
+
+                <div class="clearfix">
+                    <button type="button" onclick="document.getElementById('addpostpage').style.display='none'" class="cancelbtn">Cancel</button>
+                    <button onclick="document.getElementById('addpostpage').style.display='none'" value="Post" type="submit"
+                        class="signupbtn">Post</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script language="javascript" type="text/javascript">
@@ -306,6 +330,12 @@ hr {
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+            }
+        }
+        var modal2 = document.getElementById('addpostpage');
+        window.onclick = function (event) {
+            if (event.target == modal2) {
+                modal2.style.display = "none";
             }
         }
 
@@ -339,6 +369,8 @@ hr {
             }
         }
 
+        var loginid;
+
         function validateLogin() {
 
             var username = document.forms["loginpage"]["userid"].value.trim();
@@ -350,14 +382,15 @@ hr {
                 data: { username: username, password: password },
                 success: function (response) {
                     var msg = "";
-                    if (response == 1) {
-                        console.log("You have successfully logged in");
-                        //window.location = "home.php";
-                        homepage();
-                    } else {
+                    if (response == 0) {
                         console.log("Invalid username or password!");
+
+                    } else {
+                        console.log("You have successfully logged in");
+                        console.log("userid : " + response);
+                        loginid = response;
+                        homepage();
                     }
-                    //$("#message").html(msg);
                 }
             });
 
@@ -370,6 +403,8 @@ hr {
             var info = document.getElementById('userinfo');
             info.innerHTML = document.forms["loginpage"]["userid"].value.trim();
 
+            var i = 0;
+
             $.ajax({
                 url: 'listpost.php',
                 type: 'get',
@@ -381,19 +416,70 @@ hr {
 
                     //console.log(postjson.username[0]);
 
-                    //var json = $.parseJSON(data);
+                    //console.log(postjson[0].Postnumber);
+                    //console.log(postjson[2].Postnumber);
+
+                    //document.getElementById("post1").innerHTML = postjson[0].username + " | " + postjson[0].title;
+
+                    for (i; i < postjson.length; i++) {
+                        console.log(postjson[i]);
+
+                        function createButton() {
+                            var element = document.createElement("button");
+                            element.className = "postbutton";
+                            element.appendChild(document.createTextNode(postjson[i].username + " | " + postjson[i].title));
+                            var page = document.getElementById("postbuttons");
+                            page.appendChild(element);
+
+                            console.log(element);
+                        }
+
+                        createButton();
+
+                    }
+
+                    /*//var json = $.parseJSON(data);
                     $(postjson).each(function (i, val) {
                         $.each(val, function (k, v) {
                             //var pn = 0;
-                            console.log(k + " : " + v);
+                            //console.log(k + " : " + v);
                         });
                     });
 
                     //console.log(postjson.username(0));
+                */
                 }
             });
         }
 
+        function addpost() {
+
+            var currentdate = new Date();
+            var datetime = currentdate.getFullYear() + "-"
+                + (currentdate.getMonth() + 1) + "-"
+                + currentdate.getDate() + "   "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+
+            var posttitle = document.forms["addpostpage"]["title"].value.trim();
+            var postbody = document.forms["addpostpage"]["body"].value;
+            var postuserid = loginid;
+
+            $(document).ready(function () {
+                $.post("http://10.5.178.75/company/index.php?action=add_post",
+                    {
+                        userid: postuserid,
+                        title: posttitle,
+                        body: postbody,
+                        date: datetime
+                    },
+                    function (data, status) {
+                        console.log("Data: " + data + "\nStatus: " + status);
+                    });
+            });
+            alert("Post added");
+        }
 
     </script>
 
