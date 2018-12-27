@@ -274,10 +274,9 @@ hr {
                 class="addpost"> Add Post </button>
             <button onclick="refresh()" value="refresh" class="refresh"> Refresh </button>
             <hr>
-
-            
+           
             <form class="modal-content" action="javascript:postpage();" method="post" name="postpage">
-                <div id="postbuttons"></div>
+                <div id="postbuttons" class="postbuttons"></div>
             </form>
 
             <div class="clearfix">
@@ -467,20 +466,20 @@ hr {
                         function createButton() {
                             var element = document.createElement("button");
                             element.className = "postbutton";
-                            element.value = "postnumber" + postjson[i].Postnumber;
-                            var ll = "postpage" + postjson[i].Postnumber + "()";
+                            //element.value = "postnumber" + postjson[i].Postnumber;
+                            var ll = "postbuttonnumber('" + postjson[i].Postnumber + "')";
                             element.setAttribute("onclick", ll);
+                            //element.setAttribute("postbuttonnumber", postjson[i].Postnumber);
                             element.appendChild(document.createTextNode(postjson[i].username + " | " + postjson[i].title));
                             var page = document.getElementById("postbuttons");
                             page.appendChild(element);
                             element.remo
 
-
                             console.log(element);
                         }
                         createButton();
-                        l = "postnumber" + postjson[i].Postnumber;
-                        console.log(l);
+                        //l = "postnumber" + postjson[i].Postnumber;
+                        //onsole.log(l);
                     }
                 }
             });
@@ -530,9 +529,13 @@ hr {
             var page = document.getElementById("postpage");
             page.style.display = 'block';
 
-            var titleinfo = document.getElementById('posttitle');
-            titleinfo.innerHTML = document.forms[""][""].value.trim();
+            //var titleinfo = document.getElementById('posttitle');
+            //titleinfo.innerHTML = document.forms[""][""].value;          
+            
         }
+        function postbuttonnumber(pn) {
+                console.log("selected post : " + pn);
+            }
 
         function postpageback() {
             document.getElementById('postpage').style.display = 'none';
