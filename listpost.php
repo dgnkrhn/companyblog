@@ -1,13 +1,13 @@
 <?php
 include "config.php";
 
-$sql_query = "SELECT p.id, u.username, p.title, p.body, p.date FROM Posts p JOIN Users u ON p.userid = u.id ORDER BY p.date";
+    $sql_query = "SELECT p.id, u.username, p.title, p.body, p.date FROM Posts p JOIN Users u ON p.userid = u.id ORDER BY p.date";
     $result = mysqli_query($db, $sql_query);
 
     if (mysqli_num_rows($result) > 0) {
         $list = '';
         // output data of each row
-        $postnumber = 1;
+        $postnumber = 0;
         while ($row = mysqli_fetch_assoc($result)) {
             if ($list != '') {
                 $list = $list . ',';

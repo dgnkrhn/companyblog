@@ -117,8 +117,7 @@ button:hover {
 .modal-content {
     background-color: #fefefe;
     margin: 1% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-    border: 1px solid #888;
-    width: 40%; /* Could be more or less, depending on screen size */
+    width: 100%; /* Could be more or less, depending on screen size */
     min-width: 300px;
     max-width: 500px;
 }
@@ -274,7 +273,7 @@ hr {
                 class="addpost"> Add Post </button>
             <button onclick="refresh()" value="refresh" class="refresh"> Refresh </button>
             <hr>
-           
+
             <form class="modal-content" action="javascript:postpage();" method="post" name="postpage">
                 <div id="postbuttons" class="postbuttons"></div>
             </form>
@@ -339,14 +338,18 @@ hr {
 
     <div id="postpage" class="modalhome">
         <div class="modalhome-content">
-            <span style="float:left;" style="font-size: 80px"><b>Title</b></span>
+            <!--<span style="float:left;" style="font-size: 80px"><b>Title</b></span> -->
+            <span id="postuserid" style="float:left;"></span>
             <span id="posttitle" style="float:right;"></span>
             <br>
             <hr>
-            <p> Deneme </p>
+            <p>
+                <span id="posttext" style="float: none;"></span>
+            </p>
             <hr>
-            <div id="commentbox"></div>
+            <div id="commentbox" class="commentbox"></div>
             <hr>
+
             <label for="Comment"><b>Comment</b></label>
             <input type="text" placeholder="Enter Comment" name="Comment" required>
             <button onclick="document.getElementById('addcomment').style.display='block'" value="addcomment" type="submit"
@@ -467,7 +470,7 @@ hr {
                             var element = document.createElement("button");
                             element.className = "postbutton";
                             //element.value = "postnumber" + postjson[i].Postnumber;
-                            var ll = "postbuttonnumber('" + postjson[i].Postnumber + "')";
+                            var ll = "postbuttonnumber('" + postjson[i].Postnumber + "','" + postjson[i].postid + "')";
                             element.setAttribute("onclick", ll);
                             //element.setAttribute("postbuttonnumber", postjson[i].Postnumber);
                             element.appendChild(document.createTextNode(postjson[i].username + " | " + postjson[i].title));
@@ -525,17 +528,91 @@ hr {
             homepage();
         }
 
+        var selectedpost;
+        var selectedpostid;
+        function postbuttonnumber(pn,pi) {
+            selectedpost = pn;
+            selectedpostid = pi;
+            console.log("selected post : " + selectedpost);
+            console.log("selected post id : " + selectedpostid);
+        }
+
+        var postjson;
         function postpage() {
             var page = document.getElementById("postpage");
             page.style.display = 'block';
 
             //var titleinfo = document.getElementById('posttitle');
-            //titleinfo.innerHTML = document.forms[""][""].value;          
-            
+            //titleinfo.innerHTML = document.forms[""][""].value;  
+
+            //var info = document.getElementById('posttitle');
+            //info.innerHTML = document.forms["loginpage"]["userid"].value.trim();
+
+            $.ajax({
+                url: 'listpost.php',
+                type: 'get',
+                datatype: 'json',
+
+                success: function (data) {
+
+                    postjson = JSON.parse(data);
+
+                    var postuserid = document.getElementById('postuserid');
+                    postuserid.innerHTML = "by " + postjson[selectedpost].username;
+
+                    var posttitle = document.getElementById('posttitle');
+                    posttitle.innerHTML = postjson[selectedpost].title;
+
+                    var posttext = document.getElementById('posttext');
+                    posttext.innerHTML = postjson[selectedpost].body;
+
+                    console.log("title : " + postjson[selectedpost].title);
+
+                    var c = 0;
+                    $.ajax({
+                        url: 'listcomment.php',
+                        type: 'get',
+                        datatype: 'json',
+
+                        success: function (data) {
+
+                            var commentjson = JSON.parse(data);
+
+                            for (c; c < commentjson.length; c++) {
+                                //console.log(commentjson[c]);
+        
+                                var asd = commentjson[c].postid;
+                                //console.log(commentjson[c].postid);
+
+                                if(asd == selectedpostid) {
+                                    console.log(asd);                   
+                                
+                                function createComment() {
+                                    var element2 = document.createElement("button");
+                                    element2.className = "commentbox";
+                                    element2.value = "commentid" + commentjson[c].commentid;
+                                    //var ll = "postbuttonnumber('" + commentjson[i].Postnumber + "')";
+                                    //element.setAttribute("onclick", ll);
+                                    //element.setAttribute("postbuttonnumber", commentjson[i].Postnumber);
+                                    element2.appendChild(document.createTextNode(commentjson[c].username + " | " + commentjson[c].comment));
+                                    var page2 = document.getElementById("commentbox");
+                                    page2.appendChild(element2);
+                                    element2.remo
+        
+                                    console.log(element2);
+                                }
+                                createComment();
+                                //l = "postnumber" + postjson[i].Postnumber;
+                                //onsole.log(l);
+                                   
+                            }
+                            }
+                        }
+                    });
+                }
+            });
+
         }
-        function postbuttonnumber(pn) {
-                console.log("selected post : " + pn);
-            }
 
         function postpageback() {
             document.getElementById('postpage').style.display = 'none';
