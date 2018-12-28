@@ -338,30 +338,28 @@ hr {
 
     <div id="postinfo" class="modalhome">
         <form class="modalhome-content" action="javascript:addcomment();" method="post" name="postinfo">
-            
                 <!--<span style="float:left;" style="font-size: 80px"><b>Title</b></span> -->
-                <span id="postuserid" style="float:left;"></span>
-                <span id="posttitle" style="float:right;"></span>
+                <span id="postuserid" style="float:right;"></span>
+                <span id="posttitle" style="float:left;"></span>
                 <br>
                 <hr>
                 <p>
                     <span id="posttext" style="float: none;"></span>
                 </p>
                 <hr>
+                <label for="commentbox"><b>Comments</b></label>
                 <div id="commentbox" class="commentbox"></div>
                 <hr>
 
-                <label for="commentbody"><b>Comment</b></label>
+                <label for="commentbody"><b>Add Comment</b></label>
                 <input type="text" placeholder="Enter Comment" name="commentbody" required>
 
                 <button value="addcomment" type="submit" class="addcomment"> Add Comment </button>
 
-                <div class="clearfix">
+                <div class="clearfix"></div>
                     <button type="button" onclick="postpageback()" style="border-bottom:" class="backhomepage" value="backhomepage">Back</button>
                     <button onclick="refreshpost()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
                 </div>
-
-            
         </form>
     </div>
 
@@ -413,7 +411,7 @@ hr {
                             birthday: signbirthday
                         },
                         function (data, status) {
-                            console.log("Data: " + data + "\nStatus: " + status);
+                            //console.log("Data: " + data + "\nStatus: " + status);
                         });
                 });
                 alert("Registration Successful");
@@ -439,8 +437,8 @@ hr {
                         alert("Invalid username or password!");
 
                     } else {
-                        console.log("You have successfully logged in");
-                        console.log("userid : " + response);
+                        //console.log("You have successfully logged in");
+                        //console.log("userid : " + response);
                         loginid = response;
                         homepage();
                     }
@@ -468,7 +466,7 @@ hr {
                     var postjson = JSON.parse(data);
 
                     for (i; i < postjson.length; i++) {
-                        console.log(postjson[i]);
+                        //console.log(postjson[i]);
 
                         function createButton() {
                             var element = document.createElement("button");
@@ -482,7 +480,7 @@ hr {
                             page.appendChild(element);
                             element.remo
 
-                            console.log(element);
+                            //console.log(element);
                         }
                         createButton();
                         //l = "postnumber" + postjson[i].Postnumber;
@@ -515,7 +513,7 @@ hr {
                         date: datetime
                     },
                     function (data, status) {
-                        console.log("Data: " + data + "\nStatus: " + status);
+                        //console.log("Data: " + data + "\nStatus: " + status);
                     });
             });
             alert("Post added");
@@ -523,7 +521,6 @@ hr {
             document.forms["addpostpage"]["title"].value = "";
             document.forms["addpostpage"]["body"].value = "";
             document.getElementById('addpostpage').style.display = 'none';
-
             refresh();
         }
 
@@ -537,21 +534,15 @@ hr {
         function postbuttonnumber(pn, pi) {
             selectedpost = pn;
             selectedpostid = pi;
-            console.log("selected post : " + selectedpost);
-            console.log("selected post id : " + selectedpostid);
+            //console.log("selected post : " + selectedpost);
+            //console.log("selected post id : " + selectedpostid);
         }
 
         var postjson;
         function postpage() {
-            $("button").remove(".commentbox");
+            document.getElementById("commentbox").innerHTML = "";
             var page = document.getElementById("postinfo");
             page.style.display = 'block';
-
-            //var titleinfo = document.getElementById('posttitle');
-            //titleinfo.innerHTML = document.forms[""][""].value;  
-
-            //var info = document.getElementById('posttitle');
-            //info.innerHTML = document.forms["loginpage"]["userid"].value.trim();
 
             $.ajax({
                 url: 'listpost.php',
@@ -571,7 +562,7 @@ hr {
                     var posttext = document.getElementById('posttext');
                     posttext.innerHTML = postjson[selectedpost].body;
 
-                    console.log("title : " + postjson[selectedpost].title);
+                    //console.log("title : " + postjson[selectedpost].title);
 
                     var c = 0;
                     $.ajax({
@@ -590,26 +581,17 @@ hr {
                                 //console.log(commentjson[c].postid);
 
                                 if (asd == selectedpostid) {
-                                    console.log(asd);
+                                    //console.log(asd);
 
                                     function createComment() {
-                                        var element2 = document.createElement("button");
-                                        element2.className = "commentbox";
-                                        element2.value = "commentid" + commentjson[c].commentid;
-                                        //var ll = "postbuttonnumber('" + commentjson[i].Postnumber + "')";
-                                        //element.setAttribute("onclick", ll);
-                                        //element.setAttribute("postbuttonnumber", commentjson[i].Postnumber);
-                                        element2.appendChild(document.createTextNode(commentjson[c].username + " | " + commentjson[c].comment));
-                                        var page2 = document.getElementById("commentbox");
-                                        page2.appendChild(element2);
-                                        element2.remo
-
-                                        console.log(element2);
+                                        
+                                        
+                                        var para = document.createElement("p");
+                                        var comments = document.createTextNode(" \xa0 - " + commentjson[c].username + " | " + commentjson[c].comment);
+                                        para.appendChild(comments);
+                                        document.getElementById("commentbox").appendChild(para);
                                     }
                                     createComment();
-                                    //l = "postnumber" + postjson[i].Postnumber;
-                                    //onsole.log(l);
-
                                 }
                             }
                         }
@@ -648,20 +630,20 @@ hr {
                         date: datetime
                     },
                     function (data, status) {
-                        console.log("Data: " + data + "\nStatus: " + status);
+                        //console.log("Data: " + data + "\nStatus: " + status);
                     });
             });
             alert("Comment added");
-            $("button").remove(".commentbox");
+            document.getElementById("commentbox").innerHTML = "";
             document.forms["postinfo"]["commentbody"].value = "";
             //document.getElementById('addpostpage').style.display = 'none';
-            $("button").remove(".commentbox");
+            document.getElementById("commentbox").innerHTML = "";
             refreshpost();
         }
 
         function refreshpost() {
             document.forms["postinfo"]["commentbody"].value = "";
-            $("button").remove(".commentbox");
+            document.getElementById("commentbox").innerHTML = "";
             postpage();
         }
 
