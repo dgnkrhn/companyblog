@@ -336,7 +336,8 @@ hr {
         </form>
     </div>
 
-    <div id="postpage" class="modalhome">
+    <div id="postinfo" class="modalhome">
+            <form class="modal-content" action="javascript:addcomment();" method="post" name="postinfo">
         <div class="modalhome-content">
             <!--<span style="float:left;" style="font-size: 80px"><b>Title</b></span> -->
             <span id="postuserid" style="float:left;"></span>
@@ -347,19 +348,21 @@ hr {
                 <span id="posttext" style="float: none;"></span>
             </p>
             <hr>
-                <div id="commentbox" class="commentbox"></div>
+            <div id="commentbox" class="commentbox"></div>
             <hr>
 
-            <label for="Comment"><b>Comment</b></label>
-            <input type="text" placeholder="Enter Comment" name="Comment" required>
-            <button onclick="document.getElementById('addcomment').style.display='block'" value="addcomment" type="submit"
-                class="addcomment"> Add Comment </button>
+            <label for="commentbody"><b>Comment</b></label>
+            <input type="text" placeholder="Enter Comment" name="commentbody" required>
+
+            <button value="addcomment" type="submit" class="addcomment"> Add Comment </button>
+
             <div class="clearfix">
                 <button type="button" onclick="postpageback()" style="border-bottom:" class="backhomepage" value="backhomepage">Back</button>
                 <button onclick="refreshpost()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
             </div>
 
         </div>
+        </form>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -530,7 +533,7 @@ hr {
 
         var selectedpost;
         var selectedpostid;
-        function postbuttonnumber(pn,pi) {
+        function postbuttonnumber(pn, pi) {
             selectedpost = pn;
             selectedpostid = pi;
             console.log("selected post : " + selectedpost);
@@ -540,7 +543,7 @@ hr {
         var postjson;
         function postpage() {
             $("button").remove(".commentbox");
-            var page = document.getElementById("postpage");
+            var page = document.getElementById("postinfo");
             page.style.display = 'block';
 
             //var titleinfo = document.getElementById('posttitle');
@@ -581,32 +584,32 @@ hr {
 
                             for (c; c < commentjson.length; c++) {
                                 //console.log(commentjson[c]);
-        
+
                                 var asd = commentjson[c].postid;
                                 //console.log(commentjson[c].postid);
 
-                                if(asd == selectedpostid) {
-                                    console.log(asd);                   
-                                
-                                function createComment() {
-                                    var element2 = document.createElement("button");
-                                    element2.className = "commentbox";
-                                    element2.value = "commentid" + commentjson[c].commentid;
-                                    //var ll = "postbuttonnumber('" + commentjson[i].Postnumber + "')";
-                                    //element.setAttribute("onclick", ll);
-                                    //element.setAttribute("postbuttonnumber", commentjson[i].Postnumber);
-                                    element2.appendChild(document.createTextNode(commentjson[c].username + " | " + commentjson[c].comment));
-                                    var page2 = document.getElementById("commentbox");
-                                    page2.appendChild(element2);
-                                    element2.remo
-        
-                                    console.log(element2);
+                                if (asd == selectedpostid) {
+                                    console.log(asd);
+
+                                    function createComment() {
+                                        var element2 = document.createElement("button");
+                                        element2.className = "commentbox";
+                                        element2.value = "commentid" + commentjson[c].commentid;
+                                        //var ll = "postbuttonnumber('" + commentjson[i].Postnumber + "')";
+                                        //element.setAttribute("onclick", ll);
+                                        //element.setAttribute("postbuttonnumber", commentjson[i].Postnumber);
+                                        element2.appendChild(document.createTextNode(commentjson[c].username + " | " + commentjson[c].comment));
+                                        var page2 = document.getElementById("commentbox");
+                                        page2.appendChild(element2);
+                                        element2.remo
+
+                                        console.log(element2);
+                                    }
+                                    createComment();
+                                    //l = "postnumber" + postjson[i].Postnumber;
+                                    //onsole.log(l);
+
                                 }
-                                createComment();
-                                //l = "postnumber" + postjson[i].Postnumber;
-                                //onsole.log(l);
-                                   
-                            }
                             }
                         }
                     });
@@ -616,12 +619,47 @@ hr {
         }
 
         function postpageback() {
-            document.getElementById('postpage').style.display = 'none';
+            document.getElementById('postinfo').style.display = 'none';
             $("button").remove(".postbutton");
             homepage();
         }
 
+        function addcomment() {
+
+            var currentdate = new Date();
+            var datetime = currentdate.getFullYear() + "-"
+                + (currentdate.getMonth() + 1) + "-"
+                + currentdate.getDate() + "   "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+
+            var postuserid = loginid;
+            var postidget = selectedpostid;
+            var postbody = document.forms["postinfo"]["commentbody"].value.trim();
+
+            $(document).ready(function () {
+                $.post("http://10.5.178.75/company/index.php?action=add_comment",
+                    {
+                        userid: postuserid,
+                        postid: selectedpostid,
+                        comment: postbody,
+                        date: datetime
+                    },
+                    function (data, status) {
+                        console.log("Data: " + data + "\nStatus: " + status);
+                    });
+            });
+            alert("Comment added");
+            $("button").remove(".commentbox");
+            document.forms["postinfo"]["commentbody"].value = "";
+            //document.getElementById('addpostpage').style.display = 'none';
+            $("button").remove(".commentbox");
+            refreshpost();
+        }
+
         function refreshpost() {
+            document.forms["postinfo"]["commentbody"].value = "";
             $("button").remove(".commentbox");
             postpage();
         }
