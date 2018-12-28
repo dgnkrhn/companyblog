@@ -337,31 +337,31 @@ hr {
     </div>
 
     <div id="postinfo" class="modalhome">
-            <form class="modal-content" action="javascript:addcomment();" method="post" name="postinfo">
-        <div class="modalhome-content">
-            <!--<span style="float:left;" style="font-size: 80px"><b>Title</b></span> -->
-            <span id="postuserid" style="float:left;"></span>
-            <span id="posttitle" style="float:right;"></span>
-            <br>
-            <hr>
-            <p>
-                <span id="posttext" style="float: none;"></span>
-            </p>
-            <hr>
-            <div id="commentbox" class="commentbox"></div>
-            <hr>
+        <form class="modalhome-content" action="javascript:addcomment();" method="post" name="postinfo">
+            
+                <!--<span style="float:left;" style="font-size: 80px"><b>Title</b></span> -->
+                <span id="postuserid" style="float:left;"></span>
+                <span id="posttitle" style="float:right;"></span>
+                <br>
+                <hr>
+                <p>
+                    <span id="posttext" style="float: none;"></span>
+                </p>
+                <hr>
+                <div id="commentbox" class="commentbox"></div>
+                <hr>
 
-            <label for="commentbody"><b>Comment</b></label>
-            <input type="text" placeholder="Enter Comment" name="commentbody" required>
+                <label for="commentbody"><b>Comment</b></label>
+                <input type="text" placeholder="Enter Comment" name="commentbody" required>
 
-            <button value="addcomment" type="submit" class="addcomment"> Add Comment </button>
+                <button value="addcomment" type="submit" class="addcomment"> Add Comment </button>
 
-            <div class="clearfix">
-                <button type="button" onclick="postpageback()" style="border-bottom:" class="backhomepage" value="backhomepage">Back</button>
-                <button onclick="refreshpost()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
-            </div>
+                <div class="clearfix">
+                    <button type="button" onclick="postpageback()" style="border-bottom:" class="backhomepage" value="backhomepage">Back</button>
+                    <button onclick="refreshpost()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
+                </div>
 
-        </div>
+            
         </form>
     </div>
 
@@ -436,6 +436,7 @@ hr {
                     var msg = "";
                     if (response == 0) {
                         console.log("Invalid username or password!");
+                        alert("Invalid username or password!");
 
                     } else {
                         console.log("You have successfully logged in");
