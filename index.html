@@ -356,7 +356,7 @@ hr {
                 class="addcomment"> Add Comment </button>
             <div class="clearfix">
                 <button type="button" onclick="postpageback()" style="border-bottom:" class="backhomepage" value="backhomepage">Back</button>
-                <button onclick="refresh()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
+                <button onclick="refreshpost()" value="refreshpostpage" class="refreshpostpage"> Refresh </button>
             </div>
 
         </div>
@@ -539,6 +539,7 @@ hr {
 
         var postjson;
         function postpage() {
+            $("button").remove(".commentbox");
             var page = document.getElementById("postpage");
             page.style.display = 'block';
 
@@ -618,6 +619,11 @@ hr {
             document.getElementById('postpage').style.display = 'none';
             $("button").remove(".postbutton");
             homepage();
+        }
+
+        function refreshpost() {
+            $("button").remove(".commentbox");
+            postpage();
         }
 
 
